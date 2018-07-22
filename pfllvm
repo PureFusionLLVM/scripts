@@ -52,19 +52,6 @@ PREFIX_PATH=$TOOLCHAIN_ROOT/out/clang_linux-x86_${PFLLVM_VERSION}.x
 alias popd="popd > /dev/null"
 alias pushd="pushd > /dev/null"
 
-  cd $TOOLCHAIN_ROOT;
-  pushd llvm && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd ;
-  pushd llvm/tools/clang && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
-  pushd llvm/tools/lld && rm -rf * && git fetch $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
-  pushd llvm/tools/polly && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
-  pushd llvm/projects/compiler-rt && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
-  pushd llvm/projects/libcxx && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
-  pushd llvm/projects/libcxxabi && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
-  pushd llvm/projects/libunwind && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
-  pushd llvm/projects/openmp && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
-  pushd lvm/tools/clang/tools/extra && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
-}
-
 # Function to clean tree
 clean() {
   if [ -d $TOOLCHAIN_ROOT/cmake ];
@@ -81,6 +68,19 @@ clean() {
   else
     mkdir -p $PREFIX_PATH;
   fi;
+
+  cd $TOOLCHAIN_ROOT;
+  pushd llvm && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd ;
+  pushd llvm/tools/clang && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
+  pushd llvm/tools/lld && rm -rf * && git fetch $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
+  pushd llvm/tools/polly && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
+  pushd llvm/projects/compiler-rt && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
+  pushd llvm/projects/libcxx && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
+  pushd llvm/projects/libcxxabi && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
+  pushd llvm/projects/libunwind && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
+  pushd llvm/projects/openmp && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
+  pushd lvm/tools/clang/tools/extra && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
+}
   
 finalize() {
   # Copy toolchain makefiles
@@ -212,4 +212,3 @@ unset LD;
 
 clean;
 build;
-finalize;
