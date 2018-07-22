@@ -65,23 +65,23 @@ show_help() {
 # fi;
 
 if [ "$1" == "5" ]; then
-    export PFLLVM_BRANCH=release_50
-	export PFLLVM_VERSION=5
+    export PFLLVM_BRANCH=release_50;
+	export PFLLVM_VERSION=5;
 	export PFLLVM_LIB_VERSION="5.0.1";
 
 elif [ "$1" == "6" ]; then
-    export PFLLVM_BRANCH=release_60
-	export PFLLVM_VERSION=6
+    export PFLLVM_BRANCH=release_60;
+	export PFLLVM_VERSION=6;
 	export PFLLVM_LIB_VERSION="6.0.1";
 
 elif [ "$1" == "7" ]; then
-    export PFLLVM_BRANCH=master
-	export PFLLVM_VERSION=7
+    export PFLLVM_BRANCH=master;
+	export PFLLVM_VERSION=7;
 	export PFLLVM_LIB_VERSION="7.0.0";
 
 elif [ "$1" == "master" ]; then
-    export PFLLVM_BRANCH=master
-	export PFLLVM_VERSION=7
+    export PFLLVM_BRANCH=master;
+	export PFLLVM_VERSION=7;
 	export PFLLVM_LIB_VERSION="7.0.0";
 
 elif [ "$1" == "-h" ]; then
@@ -117,5 +117,9 @@ elif [ "$3" == "thinlto" ]; then
   export PFLLVM_USE_THINLTO="Thin";
 fi;
 
-echo "Current Settings: Branch: $PFLLVM_BRANCH Version: $PFLLVM_VERSION"
+if [ "$4" == "cache" ]; then
+  export PFLLVM_CCACH="ON";
+fi;
+
+echo "Current Settings: Branch: $PFLLVM_BRANCH Version: $PFLLVM_VERSION PFLLVM_USE_LLD: $PFLLVM_USE_LLD PFLLVM_USE_THINLTO: $PFLLVM_USE_THINLTO OPT: $OPT PFLLVM_CCACH: $PFLLVM_CCACH"
 ./scripts/pfllvm
