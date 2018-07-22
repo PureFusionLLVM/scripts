@@ -35,10 +35,13 @@ export TOOLCHAIN_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
 ###########################################################################
 
 show_help() {
-  echo "Usage: `basename $0` [5.0/6.0/7.0] [opt] [lld/thinlto]"
+  echo "Usage: `basename $0` [5/6/7/master] [opt] [lld/thinlto] [cache]"
   echo ""
-  echo "Example: `basename $0` 7.0 opt thinlto"
-  echo "Example2: `basename $0` 7.0 lld"
+  echo "Example: `basename $0` 7 opt thinlto"
+  echo "Example2: `basename $0` 7 lld"
+  echo ""
+  echo "Default Master is always the latest LLVM/Clang available"
+  echo ""
   echo ""
   echo "Commands:"
   echo "-h  Show this menu."
@@ -119,6 +122,8 @@ fi;
 
 if [ "$4" == "cache" ]; then
   export PFLLVM_CCACH="ON";
+  export CCACHE_DIR="~/.ccache"
+  export CCACHE_MAXSIZE="1GB"
 fi;
 
 echo "Current Settings: Branch: $PFLLVM_BRANCH Version: $PFLLVM_VERSION PFLLVM_USE_LLD: $PFLLVM_USE_LLD PFLLVM_USE_THINLTO: $PFLLVM_USE_THINLTO OPT: $OPT PFLLVM_CCACH: $PFLLVM_CCACH"
