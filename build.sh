@@ -13,39 +13,109 @@
 #   See the License for the specific language governing permissions and
 #   limitations under the License.
 
+export PFLLVM_USE_LLD="OFF";
+export PFLLVM_USE_THINLTO="OFF";
+
+# Enable ccache if requested
+if ! [ -z "$PFLLVM_USE_CCACHE" ];
+then
+  export PFLLVM_CCACHE=ON;
+else
+  export PFLLVM_CCACHE=OFF;
+fi;
+
 export TOOLCHAIN_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )";
+
+###########################################################################
+###########################################################################
+#####                                                                 #####
+#####      P U R E F U S I O N L L V M  B U I L D  S Y S T E M S      #####
+#####                          (C) 2018                               #####
+###########################################################################
+###########################################################################
+
+show_help() {
+  echo "Usage: `basename $0` [5.0/6.0/7.0] [opt] [lld/thinlto]"
+  echo ""
+  echo "Example: `basename $0` 7.0 opt thinlto"
+  echo "Example2: `basename $0` 7.0 lld"
+  echo ""
+  echo "Commands:"
+  echo "-h  Show this menu."
+  echo ""
+  echo "--help  Also shows this menu."
+  echo ""
+  echo "opt  Builds using -march=native -mtune=native."
+  echo "     Building with this makes it for your system only."
+  echo ""
+  echo "lld  Builds using lld as the linker. This enables clang as host toolchain."
+  echo ""
+  echo "thinlto  Enables thinlto during the build. This enables clang as host toolchain."
+  echo "         It also enables lld as the linker and increases build time."
+  echo ""
+  echo "To enable ccache export PFLLVM_USE_CCACHE=1 before running the script."
+  echo ""
+  exit 0
+}
 
 # Check if the desired version is valid
 # if [[ "$1" =~ ^[0-9]+(\.[0-9]+)?$ ]] ; then
-    export FUSIONCLANG_BRANCH=$1
-	export FUSIONCLANG_VERSION=$2
+    export PFLLVM_BRANCH=$1
+	export PFLLVM_VERSION=$2
 # fi;
 
 if [ "$1" == "5" ]; then
-    export FUSIONCLANG_BRANCH=release_50
-	export FUSIONCLANG_VERSION=5
+    export PFLLVM_BRANCH=release_50
+	export PFLLVM_VERSION=5
+	export PFLLVM_LIB_VERSION="5.0.1";
+
+elif [ "$1" == "6" ]; then
+    export PFLLVM_BRANCH=release_60
+	export PFLLVM_VERSION=6
+	export PFLLVM_LIB_VERSION="6.0.1";
+
+elif [ "$1" == "7" ]; then
+    export PFLLVM_BRANCH=release_70
+	export PFLLVM_VERSION=7
+	export PFLLVM_LIB_VERSION="7.0.0";
+
+elif [ "$1" == "master" ]; then
+    export PFLLVM_BRANCH=master
+	export PFLLVM_VERSION=7
+	export PFLLVM_LIB_VERSION="7.0.0";
+
+elif [ "$1" == "-h" ]; then
+  show_help
+elif [ "$1" == "--help" ]; then
+  show_help
+else
+  show_help
 fi
 
-if [ "$1" == "6" ]; then
-    export FUSIONCLANG_BRANCH=release_60
-	export FUSIONCLANG_VERSION=6
-fi
+# Setup build options
+if [ "$2" == "opt" ]; then
+  export OPT="-march=native -mtune=native";
+elif [ "$2" == "lld" ]; then
+  export CC="clang";
+  export CXX="clang++";
+  export PFLLVM_USE_LLD="ON";
+elif [ "$2" == "thinlto" ]; then
+  export CC="clang";
+  export CXX="clang++";
+  export PFLLVM_USE_LLD="ON";
+  export PFLLVM_USE_THINLTO="Thin";
+fi;
 
-if [ "$1" == "7" ]; then
-    export FUSIONCLANG_BRANCH=release_70
-	export FUSIONCLANG_VERSION=7
-fi
+if [ "$3" == "lld" ]; then
+  export CC="clang";
+  export CXX="clang++";
+  export PFLLVM_USE_LLD="ON";
+elif [ "$3" == "thinlto" ]; then
+  export CC="clang";
+  export CXX="clang++";
+  export PFLLVM_USE_LLD="ON";
+  export PFLLVM_USE_THINLTO="Thin";
+fi;
 
-if [ "$1" == "master" ]; then
-    export FUSIONCLANG_BRANCH=master
-	export FUSIONCLANG_VERSION=7
-fi
-
-if [ "$1" == "" ]; then
-    export FUSIONCLANG_BRANCH=master
-	export FUSIONCLANG_VERSION=7
-	echo "NOTE: No ARG given so using master branch:"
-fi
-
-echo "Current Settings: Branch: $FUSIONCLANG_BRANCH Version: $FUSIONCLANG_VERSION"
-./scripts/fusionclang
+echo "Current Settings: Branch: $PFLLVM_BRANCH Version: $PFLLVM_VERSION"
+./scripts/pfllvm
