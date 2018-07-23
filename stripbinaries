@@ -47,7 +47,7 @@ echo "Stripping: $BINS2STRIP"
 strip $BINS2STRIP
 
 # Strip clang-x
-echo "Stripping Clang Version: clangversionReal"
+echo "Stripping Clang Version: $clangversionReal"
 if [ "$clangversionReal" == "4.0" ]; then
   strip clang-4
 elif [ "$clangversionReal" == "5.0" ]; then

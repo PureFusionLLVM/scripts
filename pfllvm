@@ -80,6 +80,9 @@ syncA() {
   pushd llvm/projects/libcxxabi && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
   pushd llvm/projects/libunwind && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
   pushd llvm/projects/openmp && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
+        echo "NOTE: Removing: clang-tools-extra.git and recloning clang-tools-extra.git"
+        rm -rf $TOOLCHAIN_ROOT/llvm/tools/clang/tools/extra
+        git clone $REMOTE_URL/clang-tools-extra.git -b $PFLLVM_BRANCH $TOOLCHAIN_ROOT/llvm/tools/clang/tools/extra
   pushd lvm/tools/clang/tools/extra && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
 }
   
