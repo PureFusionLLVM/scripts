@@ -54,23 +54,6 @@ alias pushd="pushd > /dev/null"
 
 # Function to clean tree
 clean() {
-  if [ -d $TOOLCHAIN_ROOT/cmake ];
-  then
-    rm -rf $TOOLCHAIN_ROOT/cmake;
-  fi;
-
-  if [ -d "$PREFIX_PATH" ];
-  then
- #   mv $PREFIX_PATH ${PREFIX_PATH}.old
-	rm -rf $PREFIX_PATH
-    mkdir -p $PREFIX_PATH;
-    echo "NOTE: Not Empty, Deleted OLD";
-  else
-    mkdir -p $PREFIX_PATH;
-  fi;
-  }
-  
-clean() {
   echo "NOTE: Cleaning OLD Directorys:"
   if [ -d $TOOLCHAIN_ROOT/cmake ]; then
     rm -rf $TOOLCHAIN_ROOT/cmake;
@@ -88,7 +71,7 @@ syncA() {
  cd $TOOLCHAIN_ROOT;
   pushd llvm && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd ;
   pushd llvm/tools/clang && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
-  pushd llvm/tools/lld && rm -rf * && git fetch $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
+  pushd llvm/tools/lld && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
   pushd llvm/tools/polly && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
   pushd llvm/projects/compiler-rt && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
   pushd llvm/projects/libcxx && rm -rf * && git fetch llvm $PFLLVM_BRANCH && git reset --hard FETCH_HEAD && popd;
@@ -100,7 +83,7 @@ syncA() {
   
 finalize() {
   # Copy toolchain makefiles
-  cp $TOOLCHAIN_ROOT/prebuilts/makefiles/PureFusionLLVM-$PFLLVM_VERSION.mk $PREFIX_PATH/PureFusionLLVM.mk;
+  cp $TOOLCHAIN_ROOT/prebuilts/makefiles/PureFusionLLVM-${PFLLVM_VERSION}.0.mk $PREFIX_PATH/PureFusionLLVM.mk;
   current_date=$(date "+%Y%m%d");
   echo "$PFLLVM_VERSION-PureFusionLLVM-$current_date" >> $PREFIX_PATH/VERSION;
 
@@ -191,8 +174,11 @@ else
   finalize;
   # Echo Time if Build Finishes
   END_TIME=$($DATE +%s);
-  tmin=$(( (END_TIME-START_TIME)/60 ));
-  tsec=$(( (END_TIME-START_TIME)%60 ));
+  TH=$(( (END_TIME-START_TIME)/60/60%24 ));
+  TM=$(( (END_TIME-START_TIME)/60/%60 ));
+  TS=$(( (END_TIME-START_TIME)%60 ));
+  DIFF=$(($TIME_END - $TIME_START));
+  TIME_LENGTH="$(($DIFF / 60)) minute(s) and $(($DIFF % 60)) seconds."
   echo -e "";
   echo -e ${grn} "*****************************************************" ${txtrst};
   echo -e ${grn} "     ______                      __     __       __" ${txtrst};
@@ -205,7 +191,7 @@ else
   echo -e ${grn} "    PureFusionLLVM has compiled successfully!" ${txtrst};
   echo -e ${grn} "*****************************************************" ${txtrst};
   echo -e  "";
-  echo -e ${bldgrn}"Total time elapsed:${txtrst} ${grn}$tmin minutes $tsec seconds"${txtrst};
+  echo -e ${bldgrn}"Total time elapsed:${txtrst} ${grn}$TH Hours $TM minutes $TS seconds"${txtrst};
   echo -e ${bldgrn}"Toolchain located at:${txtrst} ${grn}$PREFIX_PATH"${txtrst};
 fi;
 
@@ -223,5 +209,5 @@ unset LD;
 }
 
 clean;
-#syncA;
+syncA;
 build;
